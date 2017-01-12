@@ -1,0 +1,4 @@
+GET  /api/report/    GenericActionController
+PUT  /api/data/    GenericActionController
+POST  /api/signature/    GenericActionController
+MODIFY  /api/check/    GenericActionController
