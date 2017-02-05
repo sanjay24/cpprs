@@ -1,4 +1,8 @@
-GET  /api/report/    GenericActionController
-PUT  /api/data/    GenericActionController
-POST  /api/signature/    GenericActionController
-MODIFY  /api/check/    GenericActionController
+            ################################################
+# HttpMethod  uri  ActionController::methodName
+################################################
+
+GET  /api/report/    GenericActionController::myGet
+PUT  /api/data/    GenericActionController::myPut
+POST  /api/signature/    GenericActionController::myPut
+MODIFY  /api/check/    GenericActionController::myPut

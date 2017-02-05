@@ -1,4 +1,4 @@
-CXX=/home/mk7/sanjay/gcc-5.3.0/bin/g++
+CXX=g++
 #AR=/home/mk7/sanjay/gcc-5.3.0/bin/gcc-ar
 AR=ar
 CC=gcc
@@ -22,6 +22,6 @@ route: route.o routeparser.o
 
 
 clean:
-	rm -f route.o routeparser.o
+	rm -f route.o routeparser.o routetest
 
 

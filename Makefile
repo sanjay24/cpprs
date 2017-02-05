@@ -1,4 +1,4 @@
-CXX=/home/mk7/sanjay/gcc-5.3.0/bin/g++
+CXX=g++
 CC=gcc
 
 CXXFLAGS=-I /usr/local/include -I include  -std=c++11

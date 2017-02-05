@@ -2,7 +2,7 @@
 #define __BLINK_ROUTE_CONSTANTS__
 
 enum class HttpMethod {
-  GET, POST, PUT, DELETE, MODIFY
+  GET, POST, PUT, DELETE, MODIFY, PUBLISH
 };
 
 #endif
