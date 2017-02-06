@@ -76,6 +76,7 @@ namespace blink {
   } 
 }
 
+/*
 main() {
   blink::RouteParser r("test.txt");
   auto rdata = r.getAllRoutes();
@@ -84,3 +85,4 @@ main() {
   }
   cout<<"size of rdata = "<<rdata.size()<<endl;
 }
+*/
