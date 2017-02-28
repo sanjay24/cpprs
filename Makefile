@@ -1,10 +1,10 @@
 CXX=g++
 CC=gcc
 
-CXXFLAGS=-I /usr/local/include -I include  -std=c++11
-LDFLAGS = -L /usr/local/lib
+CXXFLAGS=-I /usr/local/include -I include  -I . -std=c++11
+LDFLAGS = -L /usr/local/lib 
 
-LIBS=-levent
+LIBS=-levent util/libutil.a  dispatcher/libdispatcher.a
 
 DEPS = actioncontrollerbase.h genericactioncontroller.h util.h
 

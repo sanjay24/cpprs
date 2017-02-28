@@ -23,6 +23,8 @@
 
 #include "actioncontrollerbase.h"
 #include "genericactioncontroller.h"
+#include "util/evtrequest.h"
+#include "dispatcher/dispatcher.h"
 
 
 #ifdef _WIN32
@@ -192,6 +194,12 @@ send_document_cb(struct evhttp_request *req, void *arg)
 	size_t len;
 	int fd = -1;
 	struct stat st;
+
+	blink::util::EventRequest eventReq(req);
+
+	blink::nw::Dispatcher::instance().execute(eventReq);
+
+	std::cout<<"Path = "<<eventReq.getUriPath()<<std::endl;
 
 	if (evhttp_request_get_command(req) != EVHTTP_REQ_GET) {
 		dump_request_cb(req, arg);
@@ -401,7 +409,7 @@ main(int argc, char **argv)
 	evhttp_set_gencb(http, send_document_cb, argv[1]);
 
 	/* Now we tell the evhttp what port to listen on */
-	handle = evhttp_bind_socket_with_handle(http, "192.168.25.130", port);
+	handle = evhttp_bind_socket_with_handle(http, "localhost", port);
 	if (!handle) {
 		fprintf(stderr, "couldn't bind to port %d. Exiting.\n",
 		    (int)port);
