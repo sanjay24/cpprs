@@ -7,6 +7,8 @@
 #include <cstddef>
 #include <sstream>
 
+#include <vector>
+
 
 namespace blink {
   class Util {

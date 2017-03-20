@@ -1,22 +1,48 @@
 CXX=g++
 CC=gcc
+MAKE = make
+ECHO = echo
 
-CXXFLAGS=-I /usr/local/include -I include  -I . -std=c++11
+CXXFLAGS=-I /usr/local/include -I include  -I . -std=c++11 
 LDFLAGS = -L /usr/local/lib 
 
-LIBS=-levent util/libutil.a  dispatcher/libdispatcher.a
+SUBDIRS=util routes dispatcher
+ALLDIRS=$(SUBDIRS:%=make-%)
+CLEANDIRS = $(SUBDIRS:%=clean-%)
+.PHONY: subdirs $(SUBDIRS)
+.PHONY: clean
+.PHONY: subdirs $(CLEANDIRS)
+.PHONY: all
 
-DEPS = actioncontrollerbase.h genericactioncontroller.h util.h
+OBJLIBS = util/libutil.a \
+	dispatcher/libdispatcher.a \
+	routes/libroute.a \
+        controllers/libctrl.a
+
+LIBS = -levent 
+
+DEPS = $(shell echo *.h)
+SOURCES = $(shell echo *.cpp)
+OBJECTS = $(SOURCES:.cpp=.o)
 
 
-%.o: %.cpp $(DEPS)
+$(ALLDIRS):
+	$(MAKE) -C $(@:make-%=%)
+
+%.o: $(DEPS) 
 	$(CXX) $(CXXFLAGS) -c -o $@ $< $(CFLAGS)
 
-httpserver: actioncontrollerbase.o genericactioncontroller.o myhttpserver.o
-	$(CXX) -o myhttpserver actioncontrollerbase.o myhttpserver.o genericactioncontroller.o $(CFLAGS) $(LDFLAGS) $(LIBS)
+
+all: $(ALLDIRS)
+	$(MAKE) 
+
+clean: $(CLEANDIRS)
+	rm -f $(OBJECTS) 
+
+$(CLEANDIRS):
+	$(MAKE) clean -C $(@:clean-%=%)
 
 
-clean:
-	rm -f myhttpserver myhttpserver.o actioncontrollerbase.o genericactioncontroller.o myhttpserver.o
-
+force_look:
+	true
 
