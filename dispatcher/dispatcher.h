@@ -3,6 +3,9 @@
 
 #include "util/evtrequest.h"
 #include "util/singleton.h"
+#include "controllers/genericactioncontroller.h"
+
+#include <map>
 
 // CRTP
 namespace blink {
@@ -12,6 +15,13 @@ namespace blink {
 	// Dispatch the incoming request to the appropriate
 	// action controller
 	bool execute(blink::util::EventRequest& eq);
+
+        void initialize();
+
+        Dispatcher();
+
+       protected:
+         std::map<std::string, blink::ActionControllerBase*> mRouteMap;
     };
   }
 }

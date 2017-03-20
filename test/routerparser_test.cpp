@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
-#include "routeparser.h"
+#include "controllers/actioncontrollerbase.h"
+#include "routes/routeparser.h"
 #include <iostream>
 
 class RouteParserTest : public ::testing::Test {

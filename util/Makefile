@@ -1,7 +1,7 @@
 CXX=g++
 CC=gcc
 
-CXXFLAGS=-I /usr/local/include -I include  -std=c++11
+CXXFLAGS=-I /usr/local/include -I include  -std=c++11 
 LDFLAGS = -L /usr/local/lib
 
 DEBUGFLAGS = -g 

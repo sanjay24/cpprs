@@ -15,14 +15,14 @@
 #include <iostream>
 #include <typeinfo>
 #include <cxxabi.h>
-#include "util.h"
+#include "util/util.h"
 
 
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include "actioncontrollerbase.h"
-#include "genericactioncontroller.h"
+#include "controllers/actioncontrollerbase.h"
+#include "controllers/genericactioncontroller.h"
 #include "util/evtrequest.h"
 #include "dispatcher/dispatcher.h"
 
@@ -117,61 +117,10 @@ not_found:
 	return "application/misc";
 }
 
-/* Callback used for the /dump URI, and for every non-GET request:
- * dumps all information to stdout and gives back a trivial 200 ok */
-static void
-dump_request_cb(struct evhttp_request *req, void *arg)
-{
-
-        blink::ActionControllerBase *pCtrl = static_cast<blink::ActionControllerBase*>(arg);
-
-        pCtrl->setRequest(req);
-
-	(*pCtrl)();
-
-#if 0
-  
-
-	const char *cmdtype;
-	struct evkeyvalq *headers;
-	struct evkeyval *header;
-	struct evbuffer *buf;
-
-	switch (evhttp_request_get_command(req)) {
-	case EVHTTP_REQ_GET: cmdtype = "GET"; break;
-	case EVHTTP_REQ_POST: cmdtype = "POST"; break;
-	case EVHTTP_REQ_HEAD: cmdtype = "HEAD"; break;
-	case EVHTTP_REQ_PUT: cmdtype = "PUT"; break;
-	case EVHTTP_REQ_DELETE: cmdtype = "DELETE"; break;
-	case EVHTTP_REQ_OPTIONS: cmdtype = "OPTIONS"; break;
-	case EVHTTP_REQ_TRACE: cmdtype = "TRACE"; break;
-	case EVHTTP_REQ_CONNECT: cmdtype = "CONNECT"; break;
-	case EVHTTP_REQ_PATCH: cmdtype = "PATCH"; break;
-	default: cmdtype = "unknown"; break;
-	}
-
-	printf("Received a %s request for %s\nHeaders:\n",
-	    cmdtype, evhttp_request_get_uri(req));
-
-	headers = evhttp_request_get_input_headers(req);
-	for (header = headers->tqh_first; header;
-	    header = header->next.tqe_next) {
-		printf("  %s: %s\n", header->key, header->value);
-	}
-
-	buf = evhttp_request_get_input_buffer(req);
-	puts("Input data: <<<");
-	while (evbuffer_get_length(buf)) {
-		int n;
-		char cbuf[128];
-		n = evbuffer_remove(buf, cbuf, sizeof(cbuf));
-		if (n > 0)
-			(void) fwrite(cbuf, 1, n, stdout);
-	}
-	puts(">>>");
-
-	evhttp_send_reply(req, 200, "OK", NULL);
-#endif
+static void 
+generic_cb_all(struct evhttp_request *req, void *arg) {
+  blink::util::EventRequest eventReq(req);
+  blink::nw::Dispatcher::instance().execute(eventReq);
 }
 
 /* This callback gets invoked when we get any http request that doesn't match
@@ -201,10 +150,12 @@ send_document_cb(struct evhttp_request *req, void *arg)
 
 	std::cout<<"Path = "<<eventReq.getUriPath()<<std::endl;
 
+/*
 	if (evhttp_request_get_command(req) != EVHTTP_REQ_GET) {
 		dump_request_cb(req, arg);
 		return;
 	}
+*/
 
 	printf("Got a GET request for <%s>\n",  uri);
 
@@ -396,17 +347,17 @@ main(int argc, char **argv)
         blink::ActionControllerBase& ref  = *pctrl;
 
         int status = 0;
-        std::cout<<"type name of the class is " << blink::Util::getType(pctrl).get()<<std::endl;
-        std::cout<<"type name of the class is " << blink::Util::getType(ref).get()<<std::endl;
+        //std::cout<<"type name of the class is " << blink::Util::getType(pctrl).get()<<std::endl;
+        //std::cout<<"type name of the class is " << blink::Util::getType(ref).get()<<std::endl;
 
-	std::cout<<typeid((*pctrl)).name()<<std::endl;
+	//std::cout<<typeid((*pctrl)).name()<<std::endl;
 
 
-	evhttp_set_cb(http, "/dump", dump_request_cb, pctrl);
+	//evhttp_set_cb(http, "/dump", dump_request_cb, pctrl);
 
 	/* We want to accept arbitrary requests, so we need to set a "generic"
 	 * cb.  We can also add callbacks for specific paths. */
-	evhttp_set_gencb(http, send_document_cb, argv[1]);
+	evhttp_set_gencb(http, generic_cb_all, argv[1]);
 
 	/* Now we tell the evhttp what port to listen on */
 	handle = evhttp_bind_socket_with_handle(http, "localhost", port);
